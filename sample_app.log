@@ -1,0 +1,17 @@
+2026-01-25T10:15:32Z ERROR auth Failed login attempt for user admin from 192.168.1.100
+2026-01-25T10:15:45Z ERROR payment Payment gateway timeout after 30000ms
+2026-01-25T10:16:01Z ERROR auth Failed login attempt for user root from 10.0.0.55
+2026-01-25T10:16:15Z WARN db Slow query detected: 2500ms for SELECT * FROM orders
+2026-01-25T10:16:30Z ERROR payment Payment gateway timeout after 30000ms
+2026-01-25T10:16:45Z ERROR auth Failed login attempt for user admin from 192.168.1.100
+2026-01-25T10:17:00Z CRITICAL db Database master unreachable at 10.0.0.1:5432
+2026-01-25T10:17:15Z ERROR api Connection timeout to upstream service after 5000ms
+2026-01-25T10:17:30Z WARN cache Cache hit ratio low: 23% over last 300 seconds
+2026-01-25T10:17:45Z ERROR api Connection timeout to upstream service after 5000ms
+2026-01-25T10:18:00Z WARN db Slow query detected: 3100ms for SELECT * FROM users
+2026-01-25T10:18:15Z ERROR auth Failed login attempt for user guest from 172.16.0.8
+2026-01-25T10:18:30Z CRITICAL payment Payment database connection lost: host=db-02
+2026-01-25T10:18:45Z ERROR api Connection timeout to upstream service after 8000ms
+2026-01-25T10:19:00Z INFO auth User session expired for token 3f2504e0-4f89-11d3-9a0c-0305e82c3301
+2026-01-25T10:19:15Z ERROR db Null pointer exception in query executor at line 442
+2026-01-25T10:19:30Z WARN queue Job queue near capacity: 8750 of 10000 slots used

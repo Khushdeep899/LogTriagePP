@@ -1,0 +1,11 @@
+2026-01-25T11:00:00Z ERROR registry Service registry unreachable at http://registry:8500
+2026-01-25T11:00:15Z ERROR registry Service registry unreachable at http://registry:8500
+2026-01-25T11:00:30Z WARN k8s Pod rollout stalled: payments-v2 in region us-east-1
+2026-01-25T11:00:45Z ERROR registry Service registry unreachable at http://registry:8500
+2026-01-25T11:01:00Z WARN k8s Pod rollout stalled: payments-v2 in region eu-west-1
+2026-01-25T11:01:15Z ERROR tls SSL certificate expiring in 7 days for api.example.com
+2026-01-25T11:01:30Z ERROR tls SSL certificate expiring in 5 days for auth.example.com
+2026-01-25T11:01:45Z CRITICAL monitoring Monitoring system offline since 2026-01-25T10:55:00Z
+2026-01-25T11:02:00Z ERROR backup Backup storage access denied for bucket s3://backups-prod
+2026-01-25T11:02:15Z ERROR backup Backup storage access denied for bucket s3://backups-dr
+2026-01-25T11:02:30Z WARN security Port scan detected from 203.0.113.42 on ports 22,80,443
