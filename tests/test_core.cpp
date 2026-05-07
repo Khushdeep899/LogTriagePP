@@ -68,3 +68,31 @@ TEST(ClusterTest, GroupsIdenticalSignatures) {
     ASSERT_EQ(clusters.size(), 1u);
     EXPECT_EQ(clusters.begin()->second.count, 2);
 }
+
+// ── Test 4: select_top_clusters ──────────────────────────────────────────────
+//
+// Given an INFO cluster (severity 30) and an ERROR cluster (severity 50),
+// filtering with min_severity=40 should return only the ERROR cluster.
+
+TEST(SelectTopTest, FiltersBySeverity) {
+    std::unordered_map<std::string, Cluster> clusters;
+
+    Cluster info_c;
+    info_c.count = 5;
+    info_c.level_counts["INFO"] = 5;   // INFO = severity 30
+    clusters["svc|info msg"] = info_c;
+
+    Cluster err_c;
+    err_c.count = 3;
+    err_c.level_counts["ERROR"] = 3;   // ERROR = severity 50
+    clusters["svc|err msg"] = err_c;
+
+    // min_severity=40 means WARN and above — INFO (30) must be excluded
+    // The named argument style /* top_n= */ is just a comment, not real C++
+    // (C++ doesn't have named arguments like Python — we rely on comments)
+    auto top = select_top_clusters(clusters, /*top_n=*/10, /*min_count=*/1, /*min_severity=*/40);
+
+    ASSERT_EQ(top.size(), 1u);
+    // .at() is like dict[key] in Python but throws if key missing — safe here
+    EXPECT_EQ(top[0].second.level_counts.at("ERROR"), 3);
+}

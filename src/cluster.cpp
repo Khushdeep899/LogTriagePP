@@ -53,7 +53,41 @@ std::unordered_map<std::string, Cluster> build_clusters(
     return clusters;
 }
 
-// Stub — implemented in Task 6
+// select_top_clusters: filter clusters and return the most important ones
+//
+// Filters by min_count and min_severity, then sorts by severity (desc) then
+// count (desc), then returns up to top_n results.
 std::vector<std::pair<std::string, Cluster>> select_top_clusters(
     const std::unordered_map<std::string, Cluster>& clusters,
-    int top_n, int min_count, int min_severity) { return {}; }
+    int top_n, int min_count, int min_severity)
+{
+    // Collect clusters that pass both filters into a sortable vector
+    // std::pair<K,V> is a two-element struct — like Python's (key, value) tuple
+    std::vector<std::pair<std::string, Cluster>> result;
+
+    for (const auto& [key, cluster] : clusters) {
+        if (cluster.count < min_count)             continue;  // too few occurrences
+        if (cluster.max_severity() < min_severity) continue;  // not severe enough
+        result.push_back({key, cluster});
+    }
+
+    // std::sort with a lambda comparator
+    // Lambda syntax: [captures](params) { body }
+    // [] means no variables from the outer scope are captured
+    // Like Python's sorted(result, key=lambda x: (-x[1].max_severity(), -x[1].count))
+    std::sort(result.begin(), result.end(),
+        [](const auto& a, const auto& b) {
+            int sev_a = a.second.max_severity();
+            int sev_b = b.second.max_severity();
+            if (sev_a != sev_b) return sev_a > sev_b;   // higher severity first
+            return a.second.count > b.second.count;       // then higher count first
+        }
+    );
+
+    // Trim to top_n — like Python's result[:top_n]
+    if (static_cast<int>(result.size()) > top_n) {
+        result.resize(top_n);
+    }
+
+    return result;
+}
