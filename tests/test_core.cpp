@@ -44,3 +44,27 @@ TEST(ParseLineTest, ExtractsFields) {
     // result->message is sugar for result.value().message
     EXPECT_NE(result->message.find("Login failed"), std::string::npos);
 }
+
+// ── Test 3: build_clusters ───────────────────────────────────────────────────
+//
+// Two events with the same component and normalized message should land in
+// one cluster with count=2.
+
+TEST(ClusterTest, GroupsIdenticalSignatures) {
+    // Build two events that differ in raw message but share the same normalized form
+    LogEvent e1;
+    e1.level = "ERROR"; e1.component = "db";
+    e1.message    = "connection timeout";
+    e1.normalized = "connection timeout";  // already clean — no numbers to replace
+
+    LogEvent e2;
+    e2.level = "ERROR"; e2.component = "db";
+    e2.message    = "connection timeout after 3000ms";
+    e2.normalized = "connection timeout";  // same normalized form as e1
+
+    auto clusters = build_clusters({e1, e2}, 5);
+
+    // 1u = unsigned int literal — avoids signed/unsigned comparison warning
+    ASSERT_EQ(clusters.size(), 1u);
+    EXPECT_EQ(clusters.begin()->second.count, 2);
+}
