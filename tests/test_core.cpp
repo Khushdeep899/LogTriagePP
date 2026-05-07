@@ -26,3 +26,21 @@ TEST(NormalizeTest, MasksUuidIpNum) {
     EXPECT_NE(out.find("<UUID>"), std::string::npos);
     EXPECT_NE(out.find("<NUM>"),  std::string::npos);
 }
+
+// ── Test 2: parse_line ───────────────────────────────────────────────────────
+//
+// parse_line should extract structured fields from a log line.
+// The result is wrapped in std::optional — we must check .has_value() before use.
+
+TEST(ParseLineTest, ExtractsFields) {
+    std::string line = "2026-01-25T12:34:56Z ERROR auth Login failed for user admin";
+    auto result = parse_line(line);
+
+    // ASSERT_TRUE stops the test immediately if false — use for preconditions
+    // EXPECT_* continues even on failure — use for individual field assertions
+    ASSERT_TRUE(result.has_value());
+    EXPECT_EQ(result->level,     "ERROR");
+    EXPECT_EQ(result->component, "auth");
+    // result->message is sugar for result.value().message
+    EXPECT_NE(result->message.find("Login failed"), std::string::npos);
+}
