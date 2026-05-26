@@ -61,9 +61,7 @@ std::string format_text_report(
 
         if (show_samples && !cluster.samples.empty()) {
             out << "  Samples:\n";
-            int shown = 0;
             for (const auto& sample : cluster.samples) {
-                if (shown++ >= 3) break;
                 out << "    - " << sample << "\n";
             }
         }
