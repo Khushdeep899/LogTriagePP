@@ -2,6 +2,7 @@
 #include "model.hpp"
 #include "parser.hpp"
 #include "cluster.hpp"
+#include "output.hpp"
 
 TEST(NormalizeTest, MasksUuidIpNum) {
     std::string msg = "conn from 10.0.0.1 id=3f2504e0-4f89-11d3-9a0c-0305e82c3301 took 123ms";
@@ -57,4 +58,19 @@ TEST(SelectTopTest, FiltersBySeverity) {
 
     ASSERT_EQ(top.size(), 1u);
     EXPECT_EQ(top[0].second.level_counts.at("ERROR"), 3);
+}
+
+TEST(TextReportTest, ShowsAllStoredSamples) {
+    Cluster c;
+    c.count = 5;
+    c.level_counts["ERROR"] = 5;
+    c.samples = {"s1", "s2", "s3", "s4", "s5"};
+
+    std::vector<std::pair<std::string, Cluster>> top = {{"svc|err msg", c}};
+    std::string report = format_text_report(top, true);
+
+    for (const std::string& s : c.samples) {
+        EXPECT_NE(report.find("- " + s), std::string::npos)
+            << "sample missing from report: " << s;
+    }
 }
