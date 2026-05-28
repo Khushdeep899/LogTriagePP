@@ -3,9 +3,19 @@
 #include <regex>
 
 std::string normalize_message(const std::string& msg) {
+    struct CompiledRule { std::regex pattern; std::string replacement; };
+    static const std::vector<CompiledRule> compiled = []{
+        std::vector<CompiledRule> v;
+        v.reserve(NORMALIZE_RULES.size());
+        for (const auto& [pattern, replacement] : NORMALIZE_RULES) {
+            v.push_back({std::regex(pattern), replacement});
+        }
+        return v;
+    }();
+
     std::string result = msg;
-    for (const auto& [pattern, replacement] : NORMALIZE_RULES) {
-        result = std::regex_replace(result, std::regex(pattern), replacement);
+    for (const auto& rule : compiled) {
+        result = std::regex_replace(result, rule.pattern, rule.replacement);
     }
     return result;
 }
