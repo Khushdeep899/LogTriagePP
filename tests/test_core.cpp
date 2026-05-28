@@ -60,6 +60,20 @@ TEST(SelectTopTest, FiltersBySeverity) {
     EXPECT_EQ(top[0].second.level_counts.at("ERROR"), 3);
 }
 
+TEST(JsonOutputTest, EscapesControlCharacters) {
+    Cluster c;
+    c.count = 1;
+    c.level_counts["ERROR"] = 1;
+    c.samples = {std::string("tab\there") + char(0x01) + "end"};
+
+    std::vector<std::pair<std::string, Cluster>> top = {{"svc|sig", c}};
+    std::string json = clusters_to_json(top, true);
+
+    EXPECT_NE(json.find("\\t"), std::string::npos);
+    EXPECT_NE(json.find("\\u0001"), std::string::npos);
+    EXPECT_EQ(json.find('\t'), std::string::npos);
+}
+
 TEST(TextReportTest, ShowsAllStoredSamples) {
     Cluster c;
     c.count = 5;
